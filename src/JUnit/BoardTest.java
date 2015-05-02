@@ -2,22 +2,22 @@ package JUnit;
 
 
 import Game.Board;
+import Game.Main;
 import org.junit.Before;
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 
 
 public class BoardTest {
     Board board;
+    Main main;
 
 
     @Before
     public void before() throws Exception {
-        board = new Board();
-        board.setBoard();
+        //board = new Board();
+       // board.setBoard();
     }
 
     @Test

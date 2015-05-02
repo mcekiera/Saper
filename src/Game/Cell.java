@@ -1,12 +1,9 @@
 package Game;
 
-import com.sun.xml.internal.fastinfoset.util.CharArrayString;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 
 public class Cell implements ActionListener{
     private JButton button;
@@ -81,14 +78,6 @@ public class Cell implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         checkCell();
-    }
-    public void show(){
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.showOpenDialog();
-        File file = fileChooser.getSelectedFile();
-        String[] data = new String[3];
-        data[0] = file.getName();
-        data[1] = file.getAbsolutePath();
     }
 
 }

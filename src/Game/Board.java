@@ -6,25 +6,33 @@ import java.util.ArrayList;
 
 public class Board {
     private Cell[][] cells;
-    private int cellID = 0;
-    private int side = 8;
-    private int limit = side-2;
+    private int cellID;
+    private int side;
+    private int limit;
+    private int mines;
+    Main main;
 
-    public void setBoard(){
-        JFrame frame = new JFrame();
-        frame.add(addCells());
+    public Board(int cellPerSide, int mines){
+
+        side = cellPerSide;
+        cells = new Cell[side][side];
+        limit = side - 2;
+        cellID = 0;
+        this.mines = mines;
+   }
+
+    public JPanel setBoard(Main main){
+        this.main = main;
+        JPanel panel = addCells();
 
         plantMines();
         setCellValues();
 
-        frame.pack();
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.setVisible(true);
+        return panel;
     }
 
     public JPanel addCells(){
         JPanel panel = new JPanel(new GridLayout(side,side));
-        cells = new Cell[side][side];
         for(int i = 0; i< side; i++){
             for(int j = 0; j<side; j++){
                 cells[i][j] = new Cell(this);
@@ -36,7 +44,7 @@ public class Board {
     }
 
     public void plantMines(){
-        ArrayList<Integer> loc = generateMinesLocation(10);
+        ArrayList<Integer> loc = generateMinesLocation(mines);
         for(int i : loc){
             getCell(i).setValue(-1);
         }
@@ -114,5 +122,6 @@ public class Board {
                 b.reveal();
             }
         }
+        main.timerStop();
     }
 }
