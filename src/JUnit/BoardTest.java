@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 
@@ -22,7 +23,7 @@ public class BoardTest {
     @Test
     public void testAddMines() throws Exception {
         int count = 0;
-        for(int i = 0; i < board.getBoardSize();i++){
+        for(int i = 0; i < 100;i++){
             if(board.getCell(i).getValue() == -1) count++;
         }
         assertTrue(count == 10);
@@ -30,9 +31,9 @@ public class BoardTest {
 
     @Test
     public void testGetMinesLoc() throws Exception {
-        assertEquals(10,board.getMinesLoc(10).size());
-        assertEquals(15,board.getMinesLoc(15).size());
-        assertEquals(0,board.getMinesLoc(0).size());
+        assertEquals(10,board.generateMinesLocation(10).size());
+        assertEquals(15,board.generateMinesLocation(15).size());
+        assertEquals(0,board.generateMinesLocation(0).size());
     }
 
     @Test
@@ -46,24 +47,22 @@ public class BoardTest {
         assertTrue(board.getID() == 102);
     }
 
-    /**
-     *
-     * Method: getCell(int id)
-     *
-     */
     @Test
     public void testGetCell() throws Exception {
-
+        board.getCell(1).setValue(-3);
+        assertTrue(board.getCell(1).getValue() == -3);
+        board.getCell(1).setValue(7);
+        assertTrue(board.getCell(1).getValue() == 7);
+        board.getCell(1).setValue(67);
+        assertTrue(board.getCell(1).getValue() == 67);
     }
 
-    /**
-     *
-     * Method: fail()
-     *
-     */
     @Test
     public void testFail() throws Exception {
-
+        board.fail();
+        for(int i = 0; i < 100; i++){
+            assertFalse(board.getCell(i).getButton().isEnabled());
+        }
     }
 
 
