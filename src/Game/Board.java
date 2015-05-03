@@ -65,18 +65,9 @@ public class Board {
     }
     /*This method count number of mines around particular cell and set its value*/
     public void setCellValues(){
-        for(int i = 0; i<side; i++){
-            for(int j = 0; j<side; j++){
-                 if(cells[i][j].getValue() != -1){
-                     if(j>=1 && cells[i][j-1].isTheMine()) cells[i][j].incrementValue();
-                     if(j<= limit && cells[i][j+1].isTheMine()) cells[i][j].incrementValue();
-                     if(i>=1 && cells[i-1][j].isTheMine()) cells[i][j].incrementValue();
-                     if(i<= limit && cells[i+1][j].isTheMine()) cells[i][j].incrementValue();
-                     if(i>=1 && j>= 1 && cells[i-1][j-1].isTheMine()) cells[i][j].incrementValue();
-                     if(i<= limit && j<= limit && cells[i+1][j+1].isTheMine()) cells[i][j].incrementValue();
-                     if(i>=1 && j<= limit && cells[i-1][j+1].isTheMine()) cells[i][j].incrementValue();
-                     if(i<= limit && j>= 1 && cells[i+1][j-1].isTheMine()) cells[i][j].incrementValue();
-                 }
+        for(int byLoc = 0; byLoc < side*side; byLoc++){
+            for(int byID : getIDsFromArea(byLoc)){
+                if(getCell(byID).isTheMine()) getCell(byLoc).incrementValue();
             }
         }
     }

@@ -51,6 +51,7 @@ public class Cell implements ActionListener{
     }
 
     public void checkCell(){
+        board.getIDsFromArea(getId());
         button.setEnabled(true);
         displayValue();
         notChecked = false;
@@ -78,7 +79,7 @@ public class Cell implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         checkCell();
-        board.getIDsFromArea(getId());
+
     }
 
     public boolean isTheMine(){
