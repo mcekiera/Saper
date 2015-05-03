@@ -2,6 +2,7 @@ package Game;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 import java.util.ArrayList;
 
 public class Board {
@@ -67,14 +68,14 @@ public class Board {
         for(int i = 0; i<side; i++){
             for(int j = 0; j<side; j++){
                  if(cells[i][j].getValue() != -1){
-                     if(j>=1 && cells[i][j-1].getValue() == -1) cells[i][j].incrementValue();
-                     if(j<= limit && cells[i][j+1].getValue() == -1) cells[i][j].incrementValue();
-                     if(i>=1 && cells[i-1][j].getValue() == -1) cells[i][j].incrementValue();
-                     if(i<= limit && cells[i+1][j].getValue() == -1) cells[i][j].incrementValue();
-                     if(i>=1 && j>= 1 && cells[i-1][j-1].getValue() == -1) cells[i][j].incrementValue();
-                     if(i<= limit && j<= limit && cells[i+1][j+1].getValue() == -1) cells[i][j].incrementValue();
-                     if(i>=1 && j<= limit && cells[i-1][j+1].getValue() == -1) cells[i][j].incrementValue();
-                     if(i<= limit && j>= 1 && cells[i+1][j-1].getValue() == -1) cells[i][j].incrementValue();
+                     if(j>=1 && cells[i][j-1].isTheMine()) cells[i][j].incrementValue();
+                     if(j<= limit && cells[i][j+1].isTheMine()) cells[i][j].incrementValue();
+                     if(i>=1 && cells[i-1][j].isTheMine()) cells[i][j].incrementValue();
+                     if(i<= limit && cells[i+1][j].isTheMine()) cells[i][j].incrementValue();
+                     if(i>=1 && j>= 1 && cells[i-1][j-1].isTheMine()) cells[i][j].incrementValue();
+                     if(i<= limit && j<= limit && cells[i+1][j+1].isTheMine()) cells[i][j].incrementValue();
+                     if(i>=1 && j<= limit && cells[i-1][j+1].isTheMine()) cells[i][j].incrementValue();
+                     if(i<= limit && j>= 1 && cells[i+1][j-1].isTheMine()) cells[i][j].incrementValue();
                  }
             }
         }
@@ -87,6 +88,7 @@ public class Board {
         for(int i = 0; i<side; i++){
             for(int j = 0; j<side; j++){
                 if(!cells[i][j].isNotChecked()){
+                    //todo odkrywa tylko 0, a powinno też inne wartości
                     if(j>=1 && cells[i][j-1].isEmpty()) cells[i][j-1].checkCell();
                     if(j<= limit && cells[i][j+1].isEmpty()) cells[i][j+1].checkCell();
                     if(i>=1 && cells[i-1][j].isEmpty()) cells[i-1][j].checkCell();
@@ -124,4 +126,25 @@ public class Board {
         }
         main.timerStop();
     }
+    public List<Integer> getIDsFromArea(int impulse){
+        List<Integer> ids = new ArrayList<Integer>();
+        System.out.println(ids.toString());
+        for(int i = 0; i<side; i++){
+            for(int j = 0; j<side; j++){
+                if(cells[i][j].getId() == impulse){
+                    if(j>=1) ids.add(cells[i][j - 1].getId());
+                    if(j<= limit) ids.add(cells[i][j + 1].getId());
+                    if(i>=1) ids.add(cells[i - 1][j].getId());
+                    if(i<= limit) ids.add(cells[i + 1][j].getId());
+                    if(i>=1 && j>= 1) ids.add(cells[i-1][j-1].getId());
+                    if(i<= limit && j<= limit) ids.add(cells[i + 1][j + 1].getId());
+                    if(i>=1 && j<= limit) ids.add(cells[i - 1][j + 1].getId());
+                    if(i<= limit && j>= 1) ids.add(cells[i + 1][j - 1].getId());
+                }
+            }
+        }
+        System.out.println(ids.toString());
+        return  ids;
+    }
+
 }

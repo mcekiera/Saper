@@ -51,10 +51,10 @@ public class Cell implements ActionListener{
     }
 
     public void checkCell(){
-        button.setEnabled(false);
+        button.setEnabled(true);
         displayValue();
         notChecked = false;
-        if(value == 0) board.scanForEmptyCells();
+        //if(value == 0) board.scanForEmptyCells();
         if(value == -1) board.fail();
     }
 
@@ -78,6 +78,11 @@ public class Cell implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         checkCell();
+        board.getIDsFromArea(getId());
+    }
+
+    public boolean isTheMine(){
+        return value == -1;
     }
 
 }
