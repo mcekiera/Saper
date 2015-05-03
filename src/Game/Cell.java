@@ -40,7 +40,12 @@ public class Cell implements ActionListener{
     public void setValue(int value) {
         this.value = value;
     }
-
+    public void declareVictory(){
+        if(value ==-1){
+            displayValue();
+            button.setBackground(Color.GREEN);
+        }
+    }
     public void displayValue(){
         if(value==-1){
             button.setText("\u2600");
@@ -48,14 +53,14 @@ public class Cell implements ActionListener{
         }else if(value!=0){
             button.setText(String.valueOf(value));
         }
+        if(isNotChecked())board.checkCellOut();
     }
 
     public void checkCell(){
-        board.getIDsFromArea(getId());
-        button.setEnabled(true);
+        button.setEnabled(false);
         displayValue();
         notChecked = false;
-        //if(value == 0) board.scanForEmptyCells();
+        if(value == 0) board.scanForEmptyCells(board.getIDsFromArea(getId()));
         if(value == -1) board.fail();
     }
 
@@ -67,18 +72,16 @@ public class Cell implements ActionListener{
         return notChecked;
     }
 
-    public boolean isEmpty(){
-        return isNotChecked() && value==0;
-    }
-
     public void reveal(){
         displayValue();
         button.setEnabled(false);
+        notChecked = false;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         checkCell();
+
 
     }
 

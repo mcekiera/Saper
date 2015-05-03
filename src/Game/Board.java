@@ -11,6 +11,8 @@ public class Board {
     private int side;
     private int limit;
     private int mines;
+    private int checkedCells;
+    private boolean fail;
     Main main;
 
     public Board(int cellPerSide, int mines){
@@ -20,7 +22,14 @@ public class Board {
         limit = side - 2;
         cellID = 0;
         this.mines = mines;
+        checkedCells = side*side;
+        fail = false;
    }
+
+
+    public int getCheckedCells() {
+        return checkedCells;
+    }
 
     public JPanel setBoard(Main main){
         this.main = main;
@@ -67,7 +76,9 @@ public class Board {
     public void setCellValues(){
         for(int byLoc = 0; byLoc < side*side; byLoc++){
             for(int byID : getIDsFromArea(byLoc)){
-                if(getCell(byID).isTheMine()) getCell(byLoc).incrementValue();
+                if(getCell(byID).isTheMine() && !getCell(byLoc).isTheMine()){
+                    getCell(byLoc).incrementValue();
+                }
             }
         }
     }
@@ -75,20 +86,15 @@ public class Board {
     method look for other empty cells next to activated one. If finds one, it call checkCell and in effect,
     start next scan on its closest area.
      */
-    public void scanForEmptyCells(){
-        for(int i = 0; i<side; i++){
-            for(int j = 0; j<side; j++){
-                if(!cells[i][j].isNotChecked()){
-                    //todo odkrywa tylko 0, a powinno też inne wartości
-                    if(j>=1 && cells[i][j-1].isEmpty()) cells[i][j-1].checkCell();
-                    if(j<= limit && cells[i][j+1].isEmpty()) cells[i][j+1].checkCell();
-                    if(i>=1 && cells[i-1][j].isEmpty()) cells[i-1][j].checkCell();
-                    if(i<= limit && cells[i+1][j].isEmpty()) cells[i+1][j].checkCell();
-                    if(i>=1 && j>= 1 && cells[i-1][j-1].isEmpty()) cells[i-1][j-1].checkCell();
-                    if(i<= limit && j<= limit && cells[i+1][j+1].isEmpty()) cells[i+1][j+1].checkCell();
-                    if(i>=1 && j<= limit && cells[i-1][j+1].isEmpty()) cells[i-1][j+1].checkCell();
-                    if(i<= limit && j>= 1 && cells[i+1][j-1].isEmpty()) cells[i+1][j-1].checkCell();
+    public void scanForEmptyCells(List<Integer> listID){
+        for(int id : listID){
+            Cell cell = getCell(id);
+            if(cell.getValue()==0){
+                for(int empty : getIDsFromArea(id)){
+                    if(getCell(empty).isNotChecked()) getCell(empty).checkCell();
                 }
+            }else if(cell.getValue()>0){
+                cell.reveal();
             }
         }
     }
@@ -110,6 +116,7 @@ public class Board {
     }
 
     public void fail(){
+        fail = true;
         for(Cell[] a : cells){
             for(Cell b : a){
                 b.reveal();
@@ -119,7 +126,6 @@ public class Board {
     }
     public List<Integer> getIDsFromArea(int impulse){
         List<Integer> ids = new ArrayList<Integer>();
-        System.out.println(ids.toString());
         for(int i = 0; i<side; i++){
             for(int j = 0; j<side; j++){
                 if(cells[i][j].getId() == impulse){
@@ -134,8 +140,19 @@ public class Board {
                 }
             }
         }
-        System.out.println(ids.toString());
         return  ids;
     }
+    public void checkCellOut(){
+        System.out.println(checkedCells);
+        checkedCells--;
+        if(!fail && checkedCells == mines){
+            for(int i = 0; i< side*side; i++){
+                getCell(i).declareVictory();
+                main.timerStop();
+
+            }
+        }
+    }
+
 
 }

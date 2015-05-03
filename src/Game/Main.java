@@ -9,12 +9,14 @@ import java.text.ParseException;
 
 public class Main implements Runnable{
 
+    Board board;
     JFrame frame;
-    JPanel board;
+    JPanel panel;
     Timer timer;
     int min;
     int sec;
     JFormattedTextField time;
+    JTextField minesLeft;
 
 
     public static void main(String[] args){
@@ -26,8 +28,8 @@ public class Main implements Runnable{
 
         frame.setJMenuBar(buildMenu());
         frame.getContentPane().add(BorderLayout.NORTH, buildDisplay());
-        board = buildBoard();
-        frame.getContentPane().add(BorderLayout.CENTER,board);
+        panel = buildBoard();
+        frame.getContentPane().add(BorderLayout.CENTER, panel);
 
 
 
@@ -49,7 +51,7 @@ public class Main implements Runnable{
 
     public JPanel buildDisplay(){
         JPanel panel = new JPanel(new GridLayout(1,3,2,2));
-        JTextField minesLeft = new JTextField(3);
+        minesLeft = new JTextField(3);
         minesLeft.setEnabled(false);
         time = new JFormattedTextField(createFormatter("##:##"));
         time.setEnabled(true);
@@ -68,7 +70,7 @@ public class Main implements Runnable{
     }
 
     public JPanel buildBoard(){
-        Board board = new Board(8,10);
+        board = new Board(8,10);
         return  board.setBoard(this);
     }
     public MaskFormatter createFormatter(String s){
@@ -96,9 +98,9 @@ public class Main implements Runnable{
         @Override
         public void actionPerformed(ActionEvent e) {
             frame.setVisible(false);
-            frame.remove(board);
-            board = buildBoard();
-            frame.getContentPane().add(BorderLayout.CENTER,board);
+            frame.remove(panel);
+            panel = buildBoard();
+            frame.getContentPane().add(BorderLayout.CENTER, panel);
             frame.revalidate();
             frame.setVisible(true);
             timerStop();
