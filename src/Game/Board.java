@@ -11,8 +11,8 @@ public class Board {
     private int side;
     private int limit;
     private int mines;
-    private int checkedCells;
-    private boolean fail;
+    private int flagCounter;
+    JTextField counter;
     Main main;
 
     public Board(int cellPerSide, int mines){
@@ -21,26 +21,31 @@ public class Board {
         cells = new Cell[side][side];
         limit = side - 2;
         cellID = 0;
+        flagCounter = mines;
         this.mines = mines;
-        checkedCells = side*side;
-        fail = false;
    }
-
-
-    public int getCheckedCells() {
-        return checkedCells;
-    }
 
     public JPanel setBoard(Main main){
         this.main = main;
         JPanel panel = addCells();
-
+        panel.setBorder(BorderFactory.createBevelBorder(0));
         plantMines();
         setCellValues();
 
         return panel;
     }
+    public JTextField getCounter(){
+        counter = new JTextField(3);
+        counter.setText(String.valueOf(mines));
+        return counter;
+    }
+    public void incrementCounter(){
+        counter.setText(String.valueOf(flagCounter++));
+    }
 
+    public void decrementCounter(){
+        counter.setText(String.valueOf(flagCounter--));
+    }
     public JPanel addCells(){
         JPanel panel = new JPanel(new GridLayout(side,side));
         for(int i = 0; i< side; i++){
@@ -116,7 +121,6 @@ public class Board {
     }
 
     public void fail(){
-        fail = true;
         for(Cell[] a : cells){
             for(Cell b : a){
                 b.reveal();
@@ -142,17 +146,4 @@ public class Board {
         }
         return  ids;
     }
-    public void checkCellOut(){
-        System.out.println(checkedCells);
-        checkedCells--;
-        if(!fail && checkedCells == mines){
-            for(int i = 0; i< side*side; i++){
-                getCell(i).declareVictory();
-                main.timerStop();
-
-            }
-        }
-    }
-
-
 }
