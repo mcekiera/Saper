@@ -2,8 +2,9 @@ package Game;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 public class Board {
     private Cell[][] cells;
@@ -40,48 +41,42 @@ public class Board {
         return counter;
     }
     public void incrementCounter(){
-        counter.setText(String.valueOf(flagCounter++));
+        counter.setText(String.valueOf(++flagCounter));
     }
 
     public void decrementCounter(){
-        counter.setText(String.valueOf(flagCounter--));
+        counter.setText(String.valueOf(--flagCounter));
     }
     public JPanel addCells(){
         JPanel panel = new JPanel(new GridLayout(side,side));
-        for(int i = 0; i< side; i++){
-            for(int j = 0; j<side; j++){
-                cells[i][j] = new Cell(this);
-                cells[i][j].setId(getID());
-                panel.add(cells[i][j].getButton());
+        for(int row = 0; row< side; row++){
+            for(int col = 0; col<side; col++){
+                cells[row][col] = new Cell(this);
+                cells[row][col].setId(getID());
+                panel.add(cells[row][col].getButton());
             }
         }
         return panel;
     }
 
     public void plantMines(){
-        ArrayList<Integer> loc = generateMinesLocation(mines);
-        for(int i : loc){
-            getCell(i).setValue(-1);
+        Random random = new Random();
+        for(int i =0; i<mines; i++){
+            Cell cell = cells[random.nextInt(side)][random.nextInt(side)];
+            if(!cell.isMine()){
+                cell.setValue(-1);
+            }else{
+                i--;
+            }
         }
     }
     /*Choose rendom places for mines*/
-    public ArrayList<Integer> generateMinesLocation(int q){
-        ArrayList<Integer> loc = new ArrayList<Integer>();
-        int random;
-        for(int i = 0; i<q;){
-            random = (int)(Math.random()* (side*side));
-            if(!loc.contains(random)){
-                loc.add(random);
-                i++;
-            }
-        }
-        return loc;
-    }
+
     /*This method count number of mines around particular cell and set its value*/
     public void setCellValues(){
         for(int byLoc = 0; byLoc < side*side; byLoc++){
             for(int byID : getIDsFromArea(byLoc)){
-                if(getCell(byID).isTheMine() && !getCell(byLoc).isTheMine()){
+                if(getCell(byID).isMine() && !getCell(byLoc).isMine()){
                     getCell(byLoc).incrementValue();
                 }
             }

@@ -25,20 +25,23 @@ public class Main implements Runnable{
     }
     public void buildGUI(){
         frame = new JFrame();
-
         frame.setJMenuBar(buildMenu());
-        frame.getContentPane().add(BorderLayout.NORTH, buildDisplay());
-        panel = buildBoard();
-        frame.getContentPane().add(BorderLayout.CENTER, panel);
-
-
 
         min = sec = 0;
+
+        createDisplay();
 
         frame.pack();
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setVisible(true);
         new Thread(this).start();
+    }
+    public void createDisplay(){
+        panel = new JPanel();
+        panel.setLayout(new BorderLayout());
+        panel.add(BorderLayout.CENTER, buildBoard());
+        panel.add(BorderLayout.NORTH, buildDisplay());
+        frame.getContentPane().add(BorderLayout.CENTER,panel);
     }
     public JMenuBar buildMenu(){
         JMenuBar menu = new JMenuBar();
@@ -51,8 +54,9 @@ public class Main implements Runnable{
 
     public JPanel buildDisplay(){
         JPanel panel = new JPanel(new GridLayout(1,3,2,2));
-        minesLeft = new JTextField(3);
+        minesLeft = board.getCounter();
         minesLeft.setEnabled(false);
+
         time = new JFormattedTextField(createFormatter("##:##"));
         time.setEnabled(true);
         ImageIcon icon = new ImageIcon(Main.class.getResource("/Game/BUTTON.png"));
@@ -65,6 +69,7 @@ public class Main implements Runnable{
         panel.add(minesLeft);
         panel.add(restart);
         panel.add(time);
+
         panel.setBorder(BorderFactory.createEmptyBorder(2,2,2,2));
         return panel;
     }
@@ -97,16 +102,9 @@ public class Main implements Runnable{
     public class RestartAction implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            frame.setVisible(false);
             frame.remove(panel);
-            panel = buildBoard();
-            frame.getContentPane().add(BorderLayout.CENTER, panel);
+            createDisplay();
             frame.revalidate();
-            frame.setVisible(true);
-            timerStop();
-            time.setText("00:00");
-            min = sec = 0;
-            timer.start();
         }
     }
     public class TimerAction implements ActionListener{
@@ -119,6 +117,7 @@ public class Main implements Runnable{
             String minStr = (min<10)? "0"+min : String.valueOf(min);
             String secStr = (sec<10)? "0"+sec : String.valueOf(sec);
             time.setText(minStr+":"+secStr);
+            //minesLeft.setText(String.valueOf(board.getCounter()));
         }
     }
 }

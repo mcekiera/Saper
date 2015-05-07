@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class Cell implements ActionListener{
     private JButton button;
@@ -11,13 +13,37 @@ public class Cell implements ActionListener{
     private int value;
     private int id;
     private boolean notChecked;
+    public boolean isFlaged;
 
-    public Cell(Board board){
+    public Cell(Board b){
+        this.board = b;
         button = new JButton();
+        button.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    if (button.getText().equals("!!!")) {
+                        button.setBackground(new JButton().getBackground());
+                        button.setText("");
+                        isFlaged = false;
+                        button.addActionListener(Cell.this);
+                        board.incrementCounter();
+                    } else if (isNotChecked()) {
+                        button.setText("!!!");
+                        isFlaged = true;
+                        button.removeActionListener(Cell.this);
+                        board.decrementCounter();
+
+                    }
+                }
+            }
+        });
         button.addActionListener(this);
         button.setPreferredSize(new Dimension(20,20));
         button.setMargin(new Insets(0,0,0,0));
-        this.board = board;
+
+        isFlaged = false;
         notChecked = true;
     }
 
@@ -50,13 +76,15 @@ public class Cell implements ActionListener{
         if(value==-1){
             button.setText("\u2600");
             button.setBackground(Color.RED);
-        }else if(value!=0){
+        }else if(value==0){
+            button.setText("");
+        }else{
             button.setText(String.valueOf(value));
         }
-        if(isNotChecked())board.checkCellOut();
     }
 
     public void checkCell(){
+        if(isFlaged) return;
         button.setEnabled(false);
         displayValue();
         notChecked = false;
@@ -85,8 +113,7 @@ public class Cell implements ActionListener{
 
     }
 
-    public boolean isTheMine(){
+    public boolean isMine(){
         return value == -1;
     }
-
 }
