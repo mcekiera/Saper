@@ -9,14 +9,14 @@ import java.text.ParseException;
 
 public class Main implements Runnable{
 
-    Board board;
-    JFrame frame;
-    JPanel panel;
-    Timer timer;
-    int min;
-    int sec;
-    JFormattedTextField time;
-    JTextField minesLeft;
+    private Board board;
+    private JFrame frame;
+    private JPanel panel;
+    private Timer timer;
+    private int min;
+    private int sec;
+    private JFormattedTextField time;
+    private JTextField minesLeft;
 
 
     public static void main(String[] args){

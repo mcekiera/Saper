@@ -13,8 +13,10 @@ public class Board {
     private int limit;
     private int mines;
     private int flagCounter;
-    JTextField counter;
-    Main main;
+    private int checkCounter;
+    private boolean success;
+    private JTextField counter;
+    private Main main;
 
     public Board(int cellPerSide, int mines){
 
@@ -23,7 +25,10 @@ public class Board {
         limit = side - 2;
         cellID = 0;
         flagCounter = mines;
+        checkCounter = side*side-mines;
+        System.out.println(checkCounter);
         this.mines = mines;
+        success = true;
    }
 
     public JPanel setBoard(Main main){
@@ -64,7 +69,7 @@ public class Board {
         for(int i =0; i<mines; i++){
             Cell cell = cells[random.nextInt(side)][random.nextInt(side)];
             if(!cell.isMine()){
-                cell.setValue(-1);
+                cell.setMine();
             }else{
                 i--;
             }
@@ -109,20 +114,12 @@ public class Board {
         for(Cell[] a : cells){
             for(Cell b : a){
                 if(b.getId() == id) return b;
-
             }
         }
         return null;
     }
 
-    public void fail(){
-        for(Cell[] a : cells){
-            for(Cell b : a){
-                b.reveal();
-            }
-        }
-        main.timerStop();
-    }
+
     public List<Integer> getIDsFromArea(int impulse){
         List<Integer> ids = new ArrayList<Integer>();
         for(int i = 0; i<side; i++){
@@ -140,5 +137,31 @@ public class Board {
             }
         }
         return  ids;
+    }
+    public void fail(){
+        for(Cell[] a : cells){
+            for(Cell b : a){
+                b.setFail();
+                b.reveal();
+                System.out.println(b.getId());
+            }
+        }
+        main.timerStop();
+    }
+    public void declareVictory(){
+            for(Cell[] a : cells){
+                for(Cell b : a){
+                    b.reveal();
+                    b.disarm();
+                }
+            }
+            main.timerStop();
+    }
+
+
+    public void decreaseCounter(){
+        --checkCounter;
+        System.out.println(checkCounter);
+        if(checkCounter==0) declareVictory();
     }
 }
