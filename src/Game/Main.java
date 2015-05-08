@@ -15,8 +15,9 @@ public class Main implements Runnable{
     private Timer timer;
     private int min;
     private int sec;
+    private int mines;
+    private int side;
     private JFormattedTextField time;
-    private JTextField minesLeft;
 
 
     public static void main(String[] args){
@@ -28,6 +29,8 @@ public class Main implements Runnable{
         frame.setJMenuBar(buildMenu());
 
         min = sec = 0;
+        mines = 10;
+        side = 8;
 
         createDisplay();
 
@@ -46,6 +49,18 @@ public class Main implements Runnable{
     public JMenuBar buildMenu(){
         JMenuBar menu = new JMenuBar();
         JMenu options = new JMenu("Options");
+        JMenuItem easy = new JMenuItem("Easy");
+        JMenuItem medium = new JMenuItem("Medium");
+        JMenuItem hard = new JMenuItem(("Hard"));
+        JMenuItem extreme = new JMenuItem("Extreme");
+        options.add(easy);
+        easy.addActionListener(new EasyListener());
+        options.add(medium);
+        medium.addActionListener(new MediumListener());
+        options.add(hard);
+        hard.addActionListener(new HardListener());
+        options.add(extreme);
+        extreme.addActionListener(new ExtremeListener());
         JMenu help = new JMenu("Help");
         menu.add(options);
         menu.add(help);
@@ -54,7 +69,7 @@ public class Main implements Runnable{
 
     public JPanel buildDisplay(){
         JPanel panel = new JPanel(new GridLayout(1,3,2,2));
-        minesLeft = board.getCounter();
+        JTextField minesLeft = board.getCounter();
         minesLeft.setEnabled(false);
 
         time = new JFormattedTextField(createFormatter("##:##"));
@@ -75,7 +90,8 @@ public class Main implements Runnable{
     }
 
     public JPanel buildBoard(){
-        board = new Board(8,5);
+
+        board = new Board(side,mines);
         return  board.setBoard(this);
     }
     public MaskFormatter createFormatter(String s){
@@ -89,11 +105,13 @@ public class Main implements Runnable{
         return formatter;
     }
 
-    public void resetDisplay(){
-        minesLeft.setText("0");
-    }
     public void timerStop(){
         timer.stop();
+    }
+    public void reset(){
+        frame.remove(panel);
+        createDisplay();
+        frame.revalidate();
     }
 
     @Override
@@ -106,9 +124,7 @@ public class Main implements Runnable{
     public class RestartAction implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            frame.remove(panel);
-            createDisplay();
-            frame.revalidate();
+            reset();
         }
     }
     public class TimerAction implements ActionListener{
@@ -122,6 +138,51 @@ public class Main implements Runnable{
             String secStr = (sec<10)? "0"+sec : String.valueOf(sec);
             time.setText(minStr+":"+secStr);
             //minesLeft.setText(String.valueOf(board.getCounter()));
+        }
+    }
+
+    private class EasyListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            min = sec = 0;
+            mines = 10;
+            side = 8;
+            reset();
+            frame.pack();
+        }
+    }
+
+    private class MediumListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            min = sec = 0;
+            mines = 40;
+            side = 16;
+            reset();
+            frame.pack();
+        }
+    }
+
+    private class HardListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            min = sec = 0;
+            mines = 100;
+            side = 24;
+            reset();
+            frame.pack();
+        }
+
+    }
+
+    private class ExtremeListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            min = sec = 0;
+            mines = 200;
+            side = 32;
+            reset();
+            frame.pack();
         }
     }
 }

@@ -14,6 +14,7 @@ public class Board {
     private int checkCounter;
     private JTextField counter;
     private Main main;
+    private boolean success;
 
     public Board(int cellPerSide, int mines){
 
@@ -21,17 +22,16 @@ public class Board {
         cells = new Cell[side][side];
         flagCounter = mines;
         checkCounter = side*side-mines;
-        System.out.println(checkCounter);
         this.mines = mines;
+        success = true;
    }
 
     public JPanel setBoard(Main main){
-        this.main = main;
         JPanel panel = addCells();
         panel.setBorder(BorderFactory.createBevelBorder(0));
         plantMines();
         setCellValues();
-
+        this.main = main;
         return panel;
     }
     public JTextField getCounter(){
@@ -71,7 +71,6 @@ public class Board {
             }
         }
     }
-    /*Choose rendom places for mines*/
 
     /*This method count number of mines around particular cell and set its value*/
     public void setCellValues(){
@@ -109,7 +108,6 @@ public class Board {
         return null;
     }
 
-
     public List<Integer> getIDsFromArea(int impulse){
         List<Integer> ids = new ArrayList<Integer>();
         int limit = side - 2;
@@ -129,35 +127,20 @@ public class Board {
         }
         return  ids;
     }
-    public void fail(){
+
+    public void finish(boolean success){
+        this.success = success;
         for(Cell[] a : cells){
             for(Cell b : a){
                 b.reveal();
+                b.disarm(success);
             }
         }
         main.timerStop();
     }
-    public void declareVictory(){
-            for(Cell[] a : cells){
-                for(Cell b : a){
-                    b.reveal();
-                    b.disarm();
-                }
-            }
-            main.timerStop();
-    }
-    public void finish(){
-        for(Cell[] a : cells){
-            for(Cell b : a){
-                b.reveal();
-            }
-        }
-    }
-
 
     public void decreaseCounter(){
         --checkCounter;
-        System.out.println(checkCounter);
-        if(checkCounter==0) declareVictory();
+        if(checkCounter==0 && success) finish(true);
     }
 }
