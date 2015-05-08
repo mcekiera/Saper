@@ -43,6 +43,10 @@ public class Board {
         counter.setText(String.valueOf(++flagCounter));
     }
 
+    public boolean isSuccess(){
+        return success;
+    }
+
     public void decrementCounter(){
         counter.setText(String.valueOf(--flagCounter));
     }
@@ -90,9 +94,7 @@ public class Board {
         for(int id : listID){
             Cell cell = getCell(id);
             if(cell.getValue()==0){
-                for(int empty : getIDsFromArea(id)){
-                    if(!getCell(empty).isChecked()) getCell(empty).checkCell();
-                }
+                    if(!cell.isChecked()) cell.checkCell();
             }else if(cell.getValue()>0){
                 cell.reveal();
             }
@@ -139,8 +141,12 @@ public class Board {
         main.timerStop();
     }
 
-    public void decreaseCounter(){
+    public void checkOutCell(){
         --checkCounter;
         if(checkCounter==0 && success) finish(true);
+    }
+
+    public int getCounterValue(){
+        return Integer.parseInt(counter.getText());
     }
 }

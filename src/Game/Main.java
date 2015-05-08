@@ -24,6 +24,10 @@ public class Main implements Runnable{
         Main main = new Main();
         main.buildGUI();
     }
+
+    public Board getBoard(){
+        return board;
+    }
     public void buildGUI(){
         frame = new JFrame();
         frame.setJMenuBar(buildMenu());
@@ -54,13 +58,17 @@ public class Main implements Runnable{
         JMenuItem hard = new JMenuItem(("Hard"));
         JMenuItem extreme = new JMenuItem("Extreme");
         options.add(easy);
-        easy.addActionListener(new EasyListener());
+        easy.addActionListener(new LevelListener());
+        easy.setActionCommand(Level.EASY.name());
         options.add(medium);
-        medium.addActionListener(new MediumListener());
+        medium.addActionListener(new LevelListener());
+        medium.setActionCommand(Level.MEDIUM.name());
         options.add(hard);
-        hard.addActionListener(new HardListener());
+        hard.addActionListener(new LevelListener());
+        hard.setActionCommand(Level.HARD.name());
         options.add(extreme);
-        extreme.addActionListener(new ExtremeListener());
+        extreme.addActionListener(new LevelListener());
+        extreme.setActionCommand(Level.EXTREME.name());
         JMenu help = new JMenu("Help");
         menu.add(options);
         menu.add(help);
@@ -137,50 +145,34 @@ public class Main implements Runnable{
             String minStr = (min<10)? "0"+min : String.valueOf(min);
             String secStr = (sec<10)? "0"+sec : String.valueOf(sec);
             time.setText(minStr+":"+secStr);
-            //minesLeft.setText(String.valueOf(board.getCounter()));
+
         }
     }
 
-    private class EasyListener implements ActionListener {
+    private class LevelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            min = sec = 0;
-            mines = 10;
-            side = 8;
-            reset();
-            frame.pack();
-        }
-    }
+            Level level = Level.valueOf(e.getActionCommand());
 
-    private class MediumListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
+            switch(level){
+                case EASY:
+                    mines = 10;
+                    side = 8;
+                    break;
+                case MEDIUM:
+                    mines = 40;
+                    side = 16;
+                    break;
+                case HARD:
+                    mines = 100;
+                    side = 24;
+                    break;
+                case EXTREME:
+                    mines = 150;
+                    side = 32;
+                    break;
+            }
             min = sec = 0;
-            mines = 40;
-            side = 16;
-            reset();
-            frame.pack();
-        }
-    }
-
-    private class HardListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            min = sec = 0;
-            mines = 100;
-            side = 24;
-            reset();
-            frame.pack();
-        }
-
-    }
-
-    private class ExtremeListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            min = sec = 0;
-            mines = 200;
-            side = 32;
             reset();
             frame.pack();
         }

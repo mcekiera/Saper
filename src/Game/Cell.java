@@ -105,7 +105,7 @@ public class Cell implements ActionListener{
         }else{
             button.setText(String.valueOf(value));
         }
-        if(!isChecked()) board.decreaseCounter();
+        if(!isChecked()) board.checkOutCell();
         button.removeActionListener(Cell.this);
     }
 
