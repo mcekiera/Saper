@@ -8,13 +8,10 @@ import java.util.Random;
 
 public class Board {
     private Cell[][] cells;
-    private int cellID;
     private int side;
-    private int limit;
     private int mines;
     private int flagCounter;
     private int checkCounter;
-    private boolean success;
     private JTextField counter;
     private Main main;
 
@@ -22,13 +19,10 @@ public class Board {
 
         side = cellPerSide;
         cells = new Cell[side][side];
-        limit = side - 2;
-        cellID = 0;
         flagCounter = mines;
         checkCounter = side*side-mines;
         System.out.println(checkCounter);
         this.mines = mines;
-        success = true;
    }
 
     public JPanel setBoard(Main main){
@@ -54,11 +48,13 @@ public class Board {
     }
     public JPanel addCells(){
         JPanel panel = new JPanel(new GridLayout(side,side));
+        int id = 0;
         for(int row = 0; row< side; row++){
             for(int col = 0; col<side; col++){
                 cells[row][col] = new Cell(this);
-                cells[row][col].setId(getID());
+                cells[row][col].setId(id);
                 panel.add(cells[row][col].getButton());
+                id++;
             }
         }
         return panel;
@@ -96,18 +92,12 @@ public class Board {
             Cell cell = getCell(id);
             if(cell.getValue()==0){
                 for(int empty : getIDsFromArea(id)){
-                    if(getCell(empty).isNotChecked()) getCell(empty).checkCell();
+                    if(!getCell(empty).isChecked()) getCell(empty).checkCell();
                 }
             }else if(cell.getValue()>0){
                 cell.reveal();
             }
         }
-    }
-
-    public int getID(){
-        int id = cellID;
-        cellID++;
-        return id;
     }
 
     public Cell getCell(int id){
@@ -122,6 +112,7 @@ public class Board {
 
     public List<Integer> getIDsFromArea(int impulse){
         List<Integer> ids = new ArrayList<Integer>();
+        int limit = side - 2;
         for(int i = 0; i<side; i++){
             for(int j = 0; j<side; j++){
                 if(cells[i][j].getId() == impulse){
@@ -141,9 +132,7 @@ public class Board {
     public void fail(){
         for(Cell[] a : cells){
             for(Cell b : a){
-                b.setFail();
                 b.reveal();
-                System.out.println(b.getId());
             }
         }
         main.timerStop();
@@ -156,6 +145,13 @@ public class Board {
                 }
             }
             main.timerStop();
+    }
+    public void finish(){
+        for(Cell[] a : cells){
+            for(Cell b : a){
+                b.reveal();
+            }
+        }
     }
 
 

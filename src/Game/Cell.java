@@ -13,10 +13,10 @@ public class Cell implements ActionListener{
     private int value;
     private int id;
 
-    private boolean notChecked;
+    private boolean success;
+    private boolean isChecked;
     public boolean isFlagged;
     private boolean isMine;
-    private boolean fail;
 
     public Cell(Board b){
         this.board = b;
@@ -32,7 +32,7 @@ public class Cell implements ActionListener{
                         isFlagged = false;
                         button.addActionListener(Cell.this);
                         board.incrementCounter();
-                    } else if (isNotChecked()) {
+                    } else if (isChecked()) {
                         button.setText("!!!");
                         isFlagged = true;
                         button.removeActionListener(Cell.this);
@@ -46,15 +46,15 @@ public class Cell implements ActionListener{
         button.setPreferredSize(new Dimension(20,20));
         button.setMargin(new Insets(0,0,0,0));
 
-        fail = false;
         isMine = false;
         isFlagged = false;
-        notChecked = true;
+        isChecked = false;
     }
 
     public boolean isMine(){
         return isMine;
     }
+
     public void setMine(){
         isMine = true;
     }
@@ -75,64 +75,55 @@ public class Cell implements ActionListener{
         this.id = id;
     }
 
-    public void setFail(){
-        fail = true;
+    public boolean isChecked(){
+        return isChecked;
     }
 
     public void setValue(int value) {
         this.value = value;
     }
+
     public void disarm(){
         if(isMine){
             displayValue();
             button.setBackground(Color.GREEN);
         }
     }
+    public void incrementValue(){
+        value++;
+    }
+
+    public void setSuccess(boolean success){
+        this.success = success;
+    }
+
     public void displayValue(){
         if(isMine){
             button.setText("\u2600");
-            button.setBackground(Color.RED);
+            if(success) button.setBackground(Color.GREEN);
+            else button.setBackground(Color.RED);
+
         }else if(value==0){
             button.setText("");
         }else{
             button.setText(String.valueOf(value));
         }
-        if(isNotChecked()) board.decreaseCounter();
+        if(isChecked()) board.decreaseCounter();
         button.removeActionListener(Cell.this);
     }
 
     public void checkCell(){
-        if(isFlagged) return;
-        if(isMine){
-            System.out.println(fail);
-            fail = true;
-            System.out.println(fail);
-            board.fail();
-            System.out.println(fail);
-        }
-        button.setEnabled(false);
-        displayValue();
-        notChecked = false;
+        if(isMine) board.fail();
+        reveal();
         if(value == 0) board.scanForEmptyCells(board.getIDsFromArea(getId()));
 
     }
 
-    public void incrementValue(){
-        value++;
-    }
-
-    public boolean isNotChecked(){
-        return notChecked;
-    }
-
     public void reveal(){
-        if(isFlagged && (!fail)){
-            System.out.println(isFlagged + "" + fail);
-            return;
-        }
+        if(isFlagged) return;
         displayValue();
         button.setEnabled(false);
-        notChecked = false;
+        isChecked = true;
     }
 
     @Override

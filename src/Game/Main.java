@@ -75,7 +75,7 @@ public class Main implements Runnable{
     }
 
     public JPanel buildBoard(){
-        board = new Board(8,10);
+        board = new Board(8,5);
         return  board.setBoard(this);
     }
     public MaskFormatter createFormatter(String s){
@@ -87,6 +87,10 @@ public class Main implements Runnable{
             ex.printStackTrace();
         }
         return formatter;
+    }
+
+    public void resetDisplay(){
+        minesLeft.setText("0");
     }
     public void timerStop(){
         timer.stop();
