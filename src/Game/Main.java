@@ -5,8 +5,14 @@ import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
+import java.util.Scanner;
 
+/**
+ * Creates main GUI.
+ */
 public class Main implements Runnable{
 
     private Board board;
@@ -19,15 +25,26 @@ public class Main implements Runnable{
     private int side;
     private JFormattedTextField time;
 
-
+    /**
+     * main method,
+     * @param args
+     */
     public static void main(String[] args){
         Main main = new Main();
         main.buildGUI();
     }
 
+    /**
+     * Method provide whole board of particular game, only for test purpose.
+     * @return current Board object,
+     */
     public Board getBoard(){
         return board;
     }
+
+    /**
+     * Assemble working GUI form various elements.
+     */
     public void buildGUI(){
         frame = new JFrame();
         frame.setJMenuBar(buildMenu());
@@ -43,6 +60,10 @@ public class Main implements Runnable{
         frame.setVisible(true);
         new Thread(this).start();
     }
+
+    /**
+     * Assemble display and game board.
+     */
     public void createDisplay(){
         panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -50,6 +71,11 @@ public class Main implements Runnable{
         panel.add(BorderLayout.NORTH, buildDisplay());
         frame.getContentPane().add(BorderLayout.CENTER,panel);
     }
+
+    /**
+     * Build GUI menu bar.
+     * @return menu,
+     */
     public JMenuBar buildMenu(){
         JMenuBar menu = new JMenuBar();
         JMenu options = new JMenu("Options");
@@ -69,12 +95,22 @@ public class Main implements Runnable{
         options.add(extreme);
         extreme.addActionListener(new LevelListener());
         extreme.setActionCommand(Level.EXTREME.name());
-        JMenu help = new JMenu("Help");
+        JMenu about = new JMenu("About");
+        JMenuItem help = new JMenuItem("Help");
+        help.addActionListener(new HelpListener());
+        JMenuItem info = new JMenuItem("About");
+        info.addActionListener(new InfoListener());
+        about.add(help);
+        about.add(info);
         menu.add(options);
-        menu.add(help);
+        menu.add(about);
         return menu;
     }
 
+    /**
+     * Build reset button and displays, for time and counter.
+     * @return JPanel with components.
+     */
     public JPanel buildDisplay(){
         JPanel panel = new JPanel(new GridLayout(1,3,2,2));
         JTextField minesLeft = board.getCounter();
@@ -97,11 +133,20 @@ public class Main implements Runnable{
         return panel;
     }
 
+    /**
+     * Creates Board object of given size and mines number.
+     * @return Board object,
+     */
     public JPanel buildBoard(){
-
         board = new Board(side,mines);
         return  board.setBoard(this);
     }
+
+    /**
+     * Provides proper format of displayed text.
+     * @param s, pattern
+     * @return formatter object,
+     */
     public MaskFormatter createFormatter(String s){
         MaskFormatter formatter = null;
         try{
@@ -113,15 +158,27 @@ public class Main implements Runnable{
         return formatter;
     }
 
+    /**
+     * Stops timer counting.
+     */
     public void timerStop(){
         timer.stop();
     }
+
+    /**
+     * Recreates whole GUI for restart of game.
+     */
     public void reset(){
+        min = sec = 0;
         frame.remove(panel);
         createDisplay();
         frame.revalidate();
+        timer.start();
     }
 
+    /**
+     * Initialize work of Timer object.
+     */
     @Override
     public void run() {
         timer = new Timer(1000,new TimerAction());
@@ -129,12 +186,19 @@ public class Main implements Runnable{
         timer.start();
     }
 
+    /**
+     * Action Listener of reset button.
+     */
     public class RestartAction implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
             reset();
         }
     }
+
+    /**
+     * ActionListener of Timer object.
+     */
     public class TimerAction implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -149,6 +213,9 @@ public class Main implements Runnable{
         }
     }
 
+    /**
+     * ActionListener for difficulty level menu options. It changes board size and mines number.
+     */
     private class LevelListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -168,13 +235,56 @@ public class Main implements Runnable{
                     side = 24;
                     break;
                 case EXTREME:
-                    mines = 150;
+                    mines = 250;
                     side = 32;
                     break;
             }
-            min = sec = 0;
             reset();
             frame.pack();
+        }
+    }
+
+    /**
+     * ActionListener of help menu, displays help instruction.
+     *
+     */
+    private class HelpListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            File file = new File("src\\Game\\Help.txt");
+
+            JTextArea help = new JTextArea();
+            help.setSize(200,100);
+            JScrollPane scrollPane = new JScrollPane(help);
+            scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+            scrollPane.setPreferredSize(new Dimension(400,200));
+            help.setEditable(false);
+            help.setLineWrap(true);
+            try{
+            Scanner scanner = new Scanner(file);
+
+            while(scanner.hasNextLine()){
+                help.append(scanner.nextLine()+"\n");
+            }
+            }catch (IOException ex){
+                System.out.println(file.getAbsolutePath().toString());
+                ex.printStackTrace();
+            }
+
+            JOptionPane.showMessageDialog(frame, scrollPane, "Help", JOptionPane.PLAIN_MESSAGE);
+
+        }
+    }
+
+    /**
+     * Info ActionListener, displays information about programme.
+     */
+    private class InfoListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String info = "This programme is a working duplicate of Windows Mines Sweeper game, created for learning purpose. Kraków 2015";
+            JOptionPane.showMessageDialog(frame,info, "About programme",JOptionPane.INFORMATION_MESSAGE);
         }
     }
 }
