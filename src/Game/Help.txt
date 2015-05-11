@@ -1,0 +1,21 @@
+Minesweeper: rules and basics
+
+The object
+Find the empty squares while avoiding the mines. The faster you clear the board, the better your score.
+
+The board
+Minesweeper has four standard boards to choose from, each progressively more difficult.
+EASY: 64 tiles, 10 mines
+MEDIUM: 256 tiles, 40 mines
+HARD: 576 tiles, 100 mines
+EXTREME: 1024 tiles, 250 mines
+
+The rules in Minesweeper are simple:
+1) Uncover a mine, and the game ends.
+2) Uncover an empty square, and you keep playing.
+3) Uncover a number, and it tells you how many mines lay hidden in the eight surrounding squares—information you use to deduce which nearby squares are safe to click.
+
+Hints and tips
+- Mark the mines. If you suspect a square conceals a mine, right-click it. This puts a flag on the square. (If you're not sure, right-click again to make it a question mark.)
+- Study the patterns. If three squares in a row display 2-3-2, then you know three mines are probably lined up beside that row. If a square says 8, every surrounding square is mined.
+- Explore the unexplored. Not sure where to click next? Try clearing some unexplored territory. You're better off clicking in the middle of unmarked squares than in an area you suspect is mined.
