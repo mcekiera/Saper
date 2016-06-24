@@ -11,19 +11,19 @@ code is covered with tests, rest looks fine in my opinion, so I am pretty satisf
 Well recived on SO Code Review:
 http://codereview.stackexchange.com/questions/88636/beginner-minesweeper-game</i>
 
-#Minesweeper: rules and basics
+#Saper: rules and basics
 
 <b>The object</b>
 Find the empty squares while avoiding the mines. The faster you clear the board, the better your score.
 
 <b>The board</b>
-Minesweeper has four standard boards to choose from, each progressively more difficult.
+Saper has four standard boards to choose from, each progressively more difficult.
 <br><i>EASY</i>: 64 tiles, 10 mines
 <br><i>MEDIUM</i>: 256 tiles, 40 mines
 <br><i>HARD</i>: 576 tiles, 100 mines
 <br><i>EXTREME</i>: 1024 tiles, 250 mines
 
-<b>The rules in Minesweeper are simple:</b>
+<b>The rules in Saper are simple:</b>
 <br>1) Uncover a mine, and the game ends.
 <br>2) Uncover an empty square, and you keep playing.
 <br>3) Uncover a number, and it tells you how many mines lay hidden in the eight surrounding squares—information you use to deduce which nearby squares are safe to click.
